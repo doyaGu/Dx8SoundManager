@@ -214,7 +214,9 @@ void *DX8SoundManager::DuplicateSource(void *source)
     LPDIRECTSOUNDBUFFER newBuffer;
     HRESULT hr;
     DWORD formatSize;
-    WAVEFORMATEX waveFormat;
+    BYTE formatStack[sizeof(WAVEFORMATEX)];
+    WAVEFORMATEX *waveFormat;
+    CKBOOL formatAllocated;
     DSBCAPS caps;
     DSBUFFERDESC dsbd;
     LONG volume, pan;
@@ -241,22 +243,54 @@ void *DX8SoundManager::DuplicateSource(void *source)
     }
 
     // Fallback: Manual duplication
-    hr = srcBuffer->GetFormat(&waveFormat, sizeof(WAVEFORMATEX), &formatSize);
-    if (FAILED(hr)) return NULL;
+    waveFormat = (WAVEFORMATEX*)formatStack;
+    formatAllocated = FALSE;
+    formatSize = sizeof(formatStack);
+
+    hr = srcBuffer->GetFormat(waveFormat, formatSize, &formatSize);
+    if (hr == DSERR_INVALIDPARAM && formatSize > sizeof(formatStack)) {
+        waveFormat = (WAVEFORMATEX*)new BYTE[formatSize];
+        if (!waveFormat) {
+            return NULL;
+        }
+        formatAllocated = TRUE;
+        hr = srcBuffer->GetFormat(waveFormat, formatSize, NULL);
+    }
+
+    if (FAILED(hr)) {
+        if (formatAllocated) {
+            delete [] (BYTE*)waveFormat;
+        }
+        return NULL;
+    }
 
     caps.dwSize = sizeof(DSBCAPS);
     hr = srcBuffer->GetCaps(&caps);
-    if (FAILED(hr)) return NULL;
+    if (FAILED(hr)) {
+        if (formatAllocated) {
+            delete [] (BYTE*)waveFormat;
+        }
+        return NULL;
+    }
 
     // Create new buffer with same properties
     ZeroMemory(&dsbd, sizeof(DSBUFFERDESC));
     dsbd.dwSize = sizeof(DSBUFFERDESC);
     dsbd.dwFlags = caps.dwFlags & ~(DSBCAPS_LOCHARDWARE | DSBCAPS_LOCSOFTWARE | DSBCAPS_LOCDEFER);
     dsbd.dwBufferBytes = caps.dwBufferBytes;
-    dsbd.lpwfxFormat = &waveFormat;
+    dsbd.lpwfxFormat = waveFormat;
 
     hr = m_Root->CreateSoundBuffer(&dsbd, &newBuffer, NULL);
-    if (FAILED(hr)) return NULL;
+    if (FAILED(hr)) {
+        if (formatAllocated) {
+            delete [] (BYTE*)waveFormat;
+        }
+        return NULL;
+    }
+
+    if (formatAllocated) {
+        delete [] (BYTE*)waveFormat;
+    }
 
     // Copy properties
     if (SUCCEEDED(srcBuffer->GetVolume(&volume))) {

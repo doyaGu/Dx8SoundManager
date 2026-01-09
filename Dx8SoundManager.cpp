@@ -43,8 +43,6 @@ DX8SoundManager::DX8SoundManager(CKContext *Context)
 
 DX8SoundManager::~DX8SoundManager()
 {
-    // Ensure cleanup
-    OnCKEnd();
     DeleteCriticalSection();
 }
 

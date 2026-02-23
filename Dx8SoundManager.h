@@ -1,10 +1,10 @@
 #ifndef DX8SOUNDMANAGER_H
 #define DX8SOUNDMANAGER_H
 
-#include "DxSoundManager.h"
-
 #define DIRECTSOUND_VERSION 0x0800
 #include <dsound.h>
+
+#include "DxSoundManager.h"
 
 // Constants for better maintainability
 #define DEFAULT_SAMPLE_RATE     22050

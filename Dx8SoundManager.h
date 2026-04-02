@@ -43,28 +43,28 @@ public:
     virtual int GetWaveSize(void *source);
 
     // Buffer access
-    virtual CKERROR Lock(void *source, CKDWORD dwWriteCursor, CKDWORD dwNumBytes, 
-                        void **pvAudioPtr1, CKDWORD *dwAudioBytes1, 
-                        void **pvAudioPtr2, CKDWORD *dwAudioBytes2, 
-                        CK_WAVESOUND_LOCKMODE dwFlags);
-    virtual CKERROR Unlock(void *source, void *pvAudioPtr1, CKDWORD dwNumBytes1, 
-                          void *pvAudioPtr2, CKDWORD dwAudioBytes2);
+    virtual CKERROR Lock(void *source, CKDWORD dwWriteCursor, CKDWORD dwNumBytes,
+                         void **pvAudioPtr1, CKDWORD *dwAudioBytes1,
+                         void **pvAudioPtr2, CKDWORD *dwAudioBytes2,
+                         CK_WAVESOUND_LOCKMODE dwFlags);
+    virtual CKERROR Unlock(void *source, void *pvAudioPtr1, CKDWORD dwNumBytes1,
+                           void *pvAudioPtr2, CKDWORD dwAudioBytes2);
 
     // 2D/3D Members Functions
     virtual void SetType(void *source, CK_WAVESOUND_TYPE type);
     virtual CK_WAVESOUND_TYPE GetType(void *source);
 
     // 2D/3D Settings
-    virtual void UpdateSettings(void *source, CK_SOUNDMANAGER_CAPS settingsoptions, 
-                               CKWaveSoundSettings &settings, CKBOOL set /* = TRUE */);
+    virtual void UpdateSettings(void *source, CK_SOUNDMANAGER_CAPS settingsoptions,
+                                CKWaveSoundSettings &settings, CKBOOL set /* = TRUE */);
 
     // 3D Settings
-    virtual void Update3DSettings(void *source, CK_SOUNDMANAGER_CAPS settingsoptions, 
-                                 CKWaveSound3DSettings &settings, CKBOOL set /* = TRUE */);
+    virtual void Update3DSettings(void *source, CK_SOUNDMANAGER_CAPS settingsoptions,
+                                  CKWaveSound3DSettings &settings, CKBOOL set /* = TRUE */);
 
     // Listener settings
-    virtual void UpdateListenerSettings(CK_SOUNDMANAGER_CAPS settingsoptions, 
-                                       CKListenerSettings &settings, CKBOOL set /* = TRUE */);
+    virtual void UpdateListenerSettings(CK_SOUNDMANAGER_CAPS settingsoptions,
+                                        CKListenerSettings &settings, CKBOOL set /* = TRUE */);
 
     // Lifecycle management
     virtual CKERROR OnCKInit();
@@ -80,19 +80,19 @@ protected:
     // Internal helper methods
     void InternalPause(void *source);
     void InternalPlay(void *source, CKBOOL loop /* = FALSE */);
-    
+
     // Source positioning for 3D audio
-    void PositionSource(LPDIRECTSOUNDBUFFER psource, CK3dEntity *ent, 
-                       const VxVector &position, const VxVector &direction, 
-                       VxVector &oldpos);
-    
+    void PositionSource(LPDIRECTSOUNDBUFFER psource, CK3dEntity *ent,
+                        const VxVector &position, const VxVector &direction,
+                        VxVector &oldpos);
+
     // Resource validation
     CKBOOL ValidateSource(void *source) const;
     CKBOOL ValidateDirectSound() const;
-    
+
     // Error handling helpers
-    CKERROR HandleDirectSoundError(HRESULT hr, const char* operation) const;
-    
+    CKERROR HandleDirectSoundError(HRESULT hr, const char *operation) const;
+
     // Cleanup helpers
     void CleanupDirectSoundResources();
     void StopAllPlayingSounds();
@@ -102,15 +102,15 @@ private:
     LPDIRECTSOUND m_Root;
     LPDIRECTSOUNDBUFFER m_Primary;
     LPDIRECTSOUND3DLISTENER m_Listener;
-    
+
     // Internal state
     CKBOOL m_bInitialized;
     VxVector m_LastListenerPosition;
-    
+
     // Thread safety (if needed in multi-threaded scenarios)
     CRITICAL_SECTION m_CriticalSection;
     CKBOOL m_bCriticalSectionInitialized;
-    
+
     // Helper methods for thread safety
     void InitializeCriticalSection();
     void DeleteCriticalSection();
@@ -118,14 +118,14 @@ private:
     void LeaveCriticalSection() const;
 
     // Prevent copy construction and assignment (VC6 style)
-    DX8SoundManager(const DX8SoundManager&);
-    DX8SoundManager& operator=(const DX8SoundManager&);
+    DX8SoundManager(const DX8SoundManager &);
+    DX8SoundManager &operator=(const DX8SoundManager &);
 };
 
 // Utility functions for 3D positioning
-void Dx8PositionSource(LPDIRECTSOUNDBUFFER psource, CK3dEntity *ent, 
-                      const VxVector &position, const VxVector &direction, 
-                      VxVector &oldpos);
+void Dx8PositionSource(LPDIRECTSOUNDBUFFER psource, CK3dEntity *ent,
+                       const VxVector &position, const VxVector &direction,
+                       VxVector &oldpos);
 
 // Helper function to check if source is playing
 CKBOOL IsSourcePlaying(LPDIRECTSOUNDBUFFER source);

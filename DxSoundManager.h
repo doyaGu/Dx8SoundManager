@@ -5,7 +5,7 @@
 
 /**
  * @brief Abstract base class for DirectX Sound Manager implementations
- * 
+ *
  * This class provides the common interface for DirectX-based sound managers.
  * Concrete implementations (like DX8SoundManager) should inherit from this class.
  */
@@ -44,34 +44,34 @@ public:
     virtual int GetWaveSize(void *source) = 0;
 
     // Buffer Access
-    virtual CKERROR Lock(void *source, CKDWORD dwWriteCursor, CKDWORD dwNumBytes, 
-                        void **pvAudioPtr1, CKDWORD *dwAudioBytes1, 
-                        void **pvAudioPtr2, CKDWORD *dwAudioBytes2, 
-                        CK_WAVESOUND_LOCKMODE dwFlags) = 0;
-    virtual CKERROR Unlock(void *source, void *pvAudioPtr1, CKDWORD dwNumBytes1, 
-                          void *pvAudioPtr2, CKDWORD dwAudioBytes2) = 0;
+    virtual CKERROR Lock(void *source, CKDWORD dwWriteCursor, CKDWORD dwNumBytes,
+                         void **pvAudioPtr1, CKDWORD *dwAudioBytes1,
+                         void **pvAudioPtr2, CKDWORD *dwAudioBytes2,
+                         CK_WAVESOUND_LOCKMODE dwFlags) = 0;
+    virtual CKERROR Unlock(void *source, void *pvAudioPtr1, CKDWORD dwNumBytes1,
+                           void *pvAudioPtr2, CKDWORD dwAudioBytes2) = 0;
 
     // 2D/3D Audio Type Management
     virtual void SetType(void *source, CK_WAVESOUND_TYPE type) = 0;
     virtual CK_WAVESOUND_TYPE GetType(void *source) = 0;
 
     // Audio Settings Management
-    virtual void UpdateSettings(void *source, CK_SOUNDMANAGER_CAPS settingsoptions, 
-                               CKWaveSoundSettings &settings, CKBOOL set /* = TRUE */) = 0;
+    virtual void UpdateSettings(void *source, CK_SOUNDMANAGER_CAPS settingsoptions,
+                                CKWaveSoundSettings &settings, CKBOOL set /* = TRUE */) = 0;
 
     // 3D Audio Settings
-    virtual void Update3DSettings(void *source, CK_SOUNDMANAGER_CAPS settingsoptions, 
-                                 CKWaveSound3DSettings &settings, CKBOOL set /* = TRUE */) = 0;
+    virtual void Update3DSettings(void *source, CK_SOUNDMANAGER_CAPS settingsoptions,
+                                  CKWaveSound3DSettings &settings, CKBOOL set /* = TRUE */) = 0;
 
     // Listener Management
-    virtual void UpdateListenerSettings(CK_SOUNDMANAGER_CAPS settingsoptions, 
-                                       CKListenerSettings &settings, CKBOOL set /* = TRUE */) = 0;
+    virtual void UpdateListenerSettings(CK_SOUNDMANAGER_CAPS settingsoptions,
+                                        CKListenerSettings &settings, CKBOOL set /* = TRUE */) = 0;
 
     // Lifecycle Management
     virtual CKERROR OnCKInit() = 0;
     virtual CKERROR OnCKEnd() = 0;
     virtual CKERROR OnCKReset() = 0;
-    
+
     // Base Implementation for Common Operations
     virtual CKERROR OnCKPause();
     virtual CKERROR OnCKPlay();
@@ -102,7 +102,7 @@ public:
 
 protected:
     // Common data members for all DirectX sound managers
-    XObjectArray m_SoundsPlaying;  /* List of currently playing sounds */
+    XObjectArray m_SoundsPlaying; /* List of currently playing sounds */
 
     // Pure virtual internal methods that must be implemented
     virtual void InternalPause(void *source) = 0;
@@ -110,8 +110,8 @@ protected:
 
 private:
     // Prevent copying (VC6 style - declare but don't implement)
-    DXSoundManager(const DXSoundManager&);
-    DXSoundManager& operator=(const DXSoundManager&);
+    DXSoundManager(const DXSoundManager &);
+    DXSoundManager &operator=(const DXSoundManager &);
 };
 
 // Utility functions for audio conversion

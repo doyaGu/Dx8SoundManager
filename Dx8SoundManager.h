@@ -105,6 +105,7 @@ private:
 
     // Internal state
     CKBOOL m_bInitialized;
+    CKBOOL m_bComInitialized;
     VxVector m_LastListenerPosition;
 
     // Thread safety (if needed in multi-threaded scenarios)

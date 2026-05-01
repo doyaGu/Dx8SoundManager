@@ -36,6 +36,7 @@ DX8SoundManager::DX8SoundManager(CKContext *Context) : DXSoundManager(Context)
     m_Listener = NULL;
     m_Primary = NULL;
     m_bInitialized = FALSE;
+    m_bComInitialized = FALSE;
     m_bCriticalSectionInitialized = FALSE;
 
     InitializeCriticalSection();
@@ -955,11 +956,13 @@ CKERROR DX8SoundManager::OnCKInit()
     hr = S_OK;
 
 #ifdef CK_LIB
-    if (FAILED(CoInitialize(NULL)))
+    hr = CoInitialize(NULL);
+    if (FAILED(hr))
     {
         LeaveCriticalSection();
         return CKERR_GENERIC;
     }
+    m_bComInitialized = TRUE;
 
     hr = CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_ALL,
                           IID_IDirectSound, (void **)&m_Root);
@@ -969,6 +972,10 @@ CKERROR DX8SoundManager::OnCKInit()
         {
             MessageBox(NULL, "DirectX Sound Engine Initialization Failed", "Warning", MB_OK);
         }
+#ifdef CK_LIB
+        CoUninitialize();
+        m_bComInitialized = FALSE;
+#endif
         LeaveCriticalSection();
         return HandleDirectSoundError(hr, "CoCreateInstance");
     }
@@ -985,6 +992,10 @@ CKERROR DX8SoundManager::OnCKInit()
         {
             MessageBox(NULL, "DirectX Sound Engine Initialization Failed", "Warning", MB_OK);
         }
+#ifdef CK_LIB
+        CoUninitialize();
+        m_bComInitialized = FALSE;
+#endif
         LeaveCriticalSection();
         return HandleDirectSoundError(hr, "DirectSoundCreate");
     }
@@ -999,6 +1010,10 @@ CKERROR DX8SoundManager::OnCKInit()
         {
             MessageBox(NULL, "DirectX Cooperative Level Failed", "Warning", MB_OK);
         }
+#ifdef CK_LIB
+        CoUninitialize();
+        m_bComInitialized = FALSE;
+#endif
         LeaveCriticalSection();
         return HandleDirectSoundError(hr, "SetCooperativeLevel");
     }
@@ -1016,6 +1031,10 @@ CKERROR DX8SoundManager::OnCKInit()
         {
             MessageBox(NULL, "DirectX Primary Buffer Failed", "Warning", MB_OK);
         }
+#ifdef CK_LIB
+        CoUninitialize();
+        m_bComInitialized = FALSE;
+#endif
         LeaveCriticalSection();
         return HandleDirectSoundError(hr, "CreateSoundBuffer(Primary)");
     }
@@ -1032,6 +1051,10 @@ CKERROR DX8SoundManager::OnCKInit()
         {
             MessageBox(NULL, "DirectX Listener Failed", "Warning", MB_OK);
         }
+#ifdef CK_LIB
+        CoUninitialize();
+        m_bComInitialized = FALSE;
+#endif
         LeaveCriticalSection();
         return HandleDirectSoundError(hr, "QueryInterface(Listener)");
     }
@@ -1096,7 +1119,11 @@ CKERROR DX8SoundManager::OnCKEnd()
     m_bInitialized = FALSE;
 
 #ifdef CK_LIB
-    CoUninitialize();
+    if (m_bComInitialized)
+    {
+        CoUninitialize();
+        m_bComInitialized = FALSE;
+    }
 #endif
 
     LeaveCriticalSection();

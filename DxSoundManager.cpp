@@ -7,7 +7,7 @@ CKBOOL g_InitialVolumeChanged = FALSE;
 
 // Plugin export info
 CKPluginInfo g_PluginInfo;
-char *DXSoundManagerName = "DirectX Sound Manager";
+const char *DXSoundManagerName = "DirectX Sound Manager";
 
 // GUID for DX8 Sound Manager
 #define DX8_SOUNDMANAGER_GUID CKGUID(0x77135393, 0x225c679a)

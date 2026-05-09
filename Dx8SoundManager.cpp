@@ -960,7 +960,7 @@ CKERROR DX8SoundManager::OnCKInit()
     if (FAILED(hr))
     {
         LeaveCriticalSection();
-        return CKERR_GENERIC;
+        return CKERR_INVALIDOPERATION;
     }
     m_bComInitialized = TRUE;
 

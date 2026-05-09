@@ -1,6 +1,20 @@
 #include "DxSoundManager.h"
 #include <math.h>
 
+#ifdef CK_LIB
+    #define CreateNewManager               CreateNewSoundManager
+    #define RemoveManager                  RemoveSoundManager
+    #define CKGetPluginInfoCount           CKGet_SoundManager_PluginInfoCount
+    #define CKGetPluginInfo                CKGet_SoundManager_PluginInfo
+    #define g_PluginInfo                   g_SoundManager_PluginInfo
+#else
+    #define CreateNewManager               CreateNewManager
+    #define RemoveManager                  RemoveManager
+    #define CKGetPluginInfoCount           CKGetPluginInfoCount
+    #define CKGetPluginInfo                CKGetPluginInfo
+    #define g_PluginInfo                   g_PluginInfo
+#endif
+
 // Global variables for initial volume tracking
 long g_InitialVolume = -600;
 CKBOOL g_InitialVolumeChanged = FALSE;
@@ -18,20 +32,6 @@ CKERROR CreateDx8SoundManager(CKContext *context);
 //-----------------------------------------------------------------------------
 // Plugin Entry Points
 //-----------------------------------------------------------------------------
-
-#ifdef CK_LIB
-    #define CreateNewManager               CreateNewSoundManager
-    #define RemoveManager                  RemoveSoundManager
-    #define CKGetPluginInfoCount           CKGet_SoundManager_PluginInfoCount
-    #define CKGetPluginInfo                CKGet_SoundManager_PluginInfo
-    #define g_PluginInfo                   g_SoundManager_PluginInfo
-#else
-    #define CreateNewManager               CreateNewManager
-    #define RemoveManager                  RemoveManager
-    #define CKGetPluginInfoCount           CKGetPluginInfoCount
-    #define CKGetPluginInfo                CKGetPluginInfo
-    #define g_PluginInfo                   g_PluginInfo
-#endif
 
 CKERROR CreateNewManager(CKContext *context)
 {

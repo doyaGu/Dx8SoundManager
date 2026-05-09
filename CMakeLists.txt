@@ -54,6 +54,7 @@ endif ()
 # Project options
 # =============================================================================
 option(DX8SOUND_BUILD_STATIC "Build static library" OFF)
+option(DX8SOUND_BUILD_SHARED "Build shared library" ON)
 option(DX8SOUND_INSTALL "Generate install target" ${DX8SOUND_IS_TOP_LEVEL})
 
 # =============================================================================
@@ -179,13 +180,15 @@ endfunction()
 # =============================================================================
 # Targets
 # =============================================================================
-add_library(Dx8SoundManager SHARED ${DX8SOUND_SOURCES} Dx8SoundManager.rc)
-dx8sound_configure_target(Dx8SoundManager)
-set_target_properties(Dx8SoundManager PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-)
+if (DX8SOUND_BUILD_SHARED)
+    add_library(Dx8SoundManager SHARED ${DX8SOUND_SOURCES} Dx8SoundManager.rc)
+    dx8sound_configure_target(Dx8SoundManager)
+    set_target_properties(Dx8SoundManager PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+            ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    )
+endif ()
 
 if (DX8SOUND_BUILD_STATIC)
     add_library(Dx8SoundManagerStatic STATIC ${DX8SOUND_SOURCES})
@@ -199,10 +202,12 @@ endif ()
 # Installation
 # =============================================================================
 if (DX8SOUND_INSTALL)
-    install(TARGETS Dx8SoundManager
-            RUNTIME DESTINATION Managers
-            LIBRARY DESTINATION Managers
-    )
+    if (TARGET Dx8SoundManager)
+        install(TARGETS Dx8SoundManager
+                RUNTIME DESTINATION Managers
+                LIBRARY DESTINATION Managers
+        )
+    endif ()
 
     if (DX8SOUND_BUILD_STATIC AND TARGET Dx8SoundManagerStatic)
         install(TARGETS Dx8SoundManagerStatic

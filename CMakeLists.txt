@@ -237,14 +237,14 @@ endif ()
 if (DX8SOUND_INSTALL)
     if (TARGET Dx8SoundManager)
         install(TARGETS Dx8SoundManager
-                RUNTIME DESTINATION Managers
-                LIBRARY DESTINATION Managers
+                RUNTIME DESTINATION Managers COMPONENT Runtime
+                LIBRARY DESTINATION Managers COMPONENT Runtime
         )
     endif ()
 
     if (DX8SOUND_BUILD_STATIC AND TARGET Dx8SoundManagerStatic)
         install(TARGETS Dx8SoundManagerStatic
-                ARCHIVE DESTINATION lib
+                ARCHIVE DESTINATION lib COMPONENT Development
         )
     endif ()
 endif ()

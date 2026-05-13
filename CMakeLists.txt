@@ -213,10 +213,32 @@ endfunction()
 # =============================================================================
 # Targets
 # =============================================================================
+function(dx8sound_configure_version_resource OUT_VAR)
+    if (NOT DX8SOUND_VERSION_OVERRIDE MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$")
+        message(FATAL_ERROR "DX8SOUND_VERSION_OVERRIDE must be a numeric four-part version")
+    endif ()
+
+    string(REPLACE "." ";" _dx8sound_version_parts "${DX8SOUND_VERSION_OVERRIDE}")
+    list(GET _dx8sound_version_parts 0 DX8SOUND_RC_VERSION_MAJOR)
+    list(GET _dx8sound_version_parts 1 DX8SOUND_RC_VERSION_MINOR)
+    list(GET _dx8sound_version_parts 2 DX8SOUND_RC_VERSION_PATCH)
+    list(GET _dx8sound_version_parts 3 DX8SOUND_RC_VERSION_TWEAK)
+    set(DX8SOUND_RC_VERSION_STRING "${DX8SOUND_VERSION_OVERRIDE}")
+    set(_dx8sound_version_resource "${CMAKE_CURRENT_BINARY_DIR}/Dx8SoundManagerVersion.generated.rc")
+
+    configure_file(
+            "${CMAKE_CURRENT_SOURCE_DIR}/Version.rc.in"
+            "${_dx8sound_version_resource}"
+            @ONLY
+    )
+
+    set(${OUT_VAR} "${_dx8sound_version_resource}" PARENT_SCOPE)
+endfunction()
+
 if (DX8SOUND_BUILD_SHARED)
     set(_dx8sound_version_resource Dx8SoundManager.rc)
-    if (COMMAND ballance_configure_version_resource AND DEFINED BALLANCE_MODULE_VERSION_OVERRIDE)
-        ballance_configure_version_resource(_dx8sound_version_resource Dx8SoundManager "DirectX 8 Sound Manager" "Dx8SoundManager.dll")
+    if (DEFINED DX8SOUND_VERSION_OVERRIDE)
+        dx8sound_configure_version_resource(_dx8sound_version_resource)
     endif ()
 
     add_library(Dx8SoundManager SHARED ${DX8SOUND_SOURCES} ${_dx8sound_version_resource})

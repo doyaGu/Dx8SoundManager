@@ -214,7 +214,12 @@ endfunction()
 # Targets
 # =============================================================================
 if (DX8SOUND_BUILD_SHARED)
-    add_library(Dx8SoundManager SHARED ${DX8SOUND_SOURCES} Dx8SoundManager.rc)
+    set(_dx8sound_version_resource Dx8SoundManager.rc)
+    if (COMMAND ballance_configure_version_resource AND DEFINED BALLANCE_MODULE_VERSION_OVERRIDE)
+        ballance_configure_version_resource(_dx8sound_version_resource Dx8SoundManager "DirectX 8 Sound Manager" "Dx8SoundManager.dll")
+    endif ()
+
+    add_library(Dx8SoundManager SHARED ${DX8SOUND_SOURCES} ${_dx8sound_version_resource})
     dx8sound_configure_target(Dx8SoundManager)
     set_target_properties(Dx8SoundManager PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"

@@ -26,6 +26,7 @@ BEGIN
             VALUE "FileDescription", "DirectX 8 Sound Manager"
             VALUE "FileVersion", "@DX8SOUND_RC_VERSION_STRING@\0"
             VALUE "InternalName", "Dx8SoundManager\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026\0"
             VALUE "OriginalFilename", "Dx8SoundManager.dll\0"
             VALUE "ProductName", "Ballanced"
             VALUE "ProductVersion", "@DX8SOUND_RC_VERSION_STRING@\0"
